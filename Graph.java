@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Mariana Hernandez / COMP 272: Data Structures II (Fall 2024)
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -38,16 +38,16 @@ public class Graph {
 
   /*
    * method setValue
-   * 
+   *
    * Sets a vertex's (node's) value.
-   */ 
-  
+   */
+
   public void setValue(int vertexIndex, int value) {
     if (vertexIndex >= 0 && vertexIndex < numVertices) {
       vertexValues.set(vertexIndex, value);
     } else {
       throw new IllegalArgumentException(
-             "Invalid vertex index: " + vertexIndex);
+              "Invalid vertex index: " + vertexIndex);
     }
   }
 
@@ -58,13 +58,13 @@ public class Graph {
 
   /*
    * method printGraph
-   * 
+   *
    * Prints the graph as an adjacency matrix
-   */ 
-  
+   */
+
   public void printGraph() {
     System.out.println(
-         "\nAdjacency Matrix Representation:\n");
+            "\nAdjacency Matrix Representation:\n");
     int[][] matrix = new int[numVertices][numVertices];
 
     for (int i = 0; i < numVertices; i++) {
@@ -95,16 +95,48 @@ public class Graph {
 
   /**
    * method findRoot
-   *
+   * <p>
    * This method returns the value of the root vertex, where root is defined in
    * this case as a node that has no incoming edges. If no root vertex is found
    * and/or more than one root vertex, then return -1.
-   * 
    */
-  
+
   public int findRoot() {
 
-    // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME/SECTION AT TOP OF FILE
-    return -1;
-  } 
+    // Step 1: Track vertices with incoming edges
+    // We use this array to check if a vertex has any incoming edges from other vertices
+    boolean[] hasIncomingEdge = new boolean[numVertices];
+
+    // Step 2: Mark vertices that have incoming edges
+    // Loop through all vertices (source) and their adjacent vertices (destination)
+    // If a destination has an incoming edge, we mark it as true in the hasIncomingEdge array
+    for (int src = 0; src < numVertices; src++) {
+      for (int dest : adjListArr[src]) {
+        hasIncomingEdge[dest] = true; // Mark destination as having an incoming edge
+      }
+    }
+
+    // Step 3: Identify vertices with no incoming edges
+    // The root vertex should not have any incoming edges, so we look for such vertices
+    int rootCandidate = -1; // Initialize rootCandidate to -1 (indicating no root found yet)
+    for (int i = 0; i < numVertices; i++) {
+      if (!hasIncomingEdge[i]) { // If a vertex has no incoming edge, it's a candidate for the root
+        if (rootCandidate == -1) {
+          rootCandidate = i; // First root found, assign rootCandidate
+        } else {
+          // More than one root found, return -1 since there can't be multiple roots
+          return -1;
+        }
+      }
+    }
+
+    // Step 4: If no root is found (rootCandidate is still -1), return -1
+    if (rootCandidate == -1) {
+      return -1;  // No root vertex found
+    }
+
+    // Step 5: Return the value of the root vertex
+    // If we found a valid root, return its value using the vertexValues list
+    return vertexValues.get(rootCandidate);  // Return the value of the root vertex
+  }
 }
